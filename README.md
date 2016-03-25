@@ -25,3 +25,23 @@ all DDL indicates 11:59pm that day.
   __[book]__ https://helda.helsinki.fi/bitstream/handle/10138/21370/methodsf.pdf?sequence=2
   
   大家觉得有用的资源都在这里贴上来，互相看看！
+
+### Brief summary:
+__[dataset]__:
+1. Chinese Question classification dataset developed by Sudan University, very similar to TREC QA Dataset;
+
+2. Questions and answers dataset from 4 large online discussion board in China; one question correspond to multiple answers from different people;
+
+3. Three datasets from 3 sources that can be used to develop a word-segmentation and POS tagging problem; But we’re also looking for toolkit that can solve the problem more efficiently than simply building it by ourselves;
+
+__[Target]__:
+Build a Chinese QA system giving people exact answers instead of various web pages or documents for users to look up.
+
+__[Method]__:
+Build a word segmentation and POS tagging tool to help us extract key words/information and classify question types;
+Using dataset1 to train a question classifier and get supertypes and subtypes of them, so we can give the desired answer a narrow limitation. For example, Q: where’s USC located in? This should be a info-asking question and we should limit our answer to a location name. Then we discompose the question and formulate again to get answers from Baidu/Bing(Google doesn’t work in China).
+Connect Baidu/Bing API to extract and select answers to our new-formulated question. For example, Q: which year or date did 911 happen? We formulate a new question with key information and extract the most common date appears in the results from Baidu/Bing, since that could the most likely answer we want. Then return the answer(s) we generate to users.
+
+__[Evaluation]__:
+About the question part, we have dataset1 having correct types of multiple questions, so we can test on that. And for those subtypes who not showing on the dataset1 but we think should be added as a type, we’ll annotate questions manually;
+About the answer accuracy part, we’ll test the system manually by selecting different questions of different types, and then manually judge if the answer is satisfying. We’ll use 2-3 people to score the same question also.
