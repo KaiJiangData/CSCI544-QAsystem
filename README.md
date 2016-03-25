@@ -7,7 +7,7 @@ CSCI544-QAsystem
   Build a Chinese QA system giving people exact answers to queries instead of various web pages or documents for users to look up.
 
 ### Tools:
-  Python, Java, Word segemtor from Stanford University
+  Python, Java, Word segmentor from Stanford University
 
 ### Schedule:
 __[2016/03/25 - 2016/03/29]__ discuss the task modules and tools (also the corresponding person) and work flow (with DDL)(must be tested on the feasibility); finish and submit the final proposal.
