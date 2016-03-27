@@ -24,7 +24,7 @@ all DDL indicates 11:59pm that day.
   
   __[book]__ https://helda.helsinki.fi/bitstream/handle/10138/21370/methodsf.pdf?sequence=2
   
-  __[值得借鉴的框架论文]__https://www.google.com/patents/US20020052871
+  __[借鉴的框架论文]__https://www.google.com/patents/US20020052871
   
   大家觉得有用的资源都在这里贴上来，互相看看！
 
