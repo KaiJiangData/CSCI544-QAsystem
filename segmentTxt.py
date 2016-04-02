@@ -8,9 +8,8 @@ import subprocess
 # 'stanford-segmenter-2015-12-09' folder that can be downloaded from http://nlp.stanford.edu/software/segmenter.shtml
 # Usage: python segmentTxt.py input_Text_File_Name output_Text_File_Name
 
-segment_url = "./stanford-segmenter-2015-12-09/segment.sh ctb "
 intermedia_buffer = "intermedia_buffer.txt"
-otherArg = " UTF-8 0"
+command=["./stanford-segmenter-2015-12-09/segment.sh", "ctb", intermedia_buffer, "UTF-8","0"]
 
 file_need_segment = open(sys.argv[1], "r")
 content = file_need_segment.read().decode('utf-8')
@@ -27,8 +26,8 @@ for line in split_content:
 intermedia_buffer_file.close()
 
 segmented_file = open(sys.argv[2], 'w')
-command = segment_url + intermedia_buffer + otherArg
-subprocess.Popen(command, stdout=segmented_file, shell=True)
+p = subprocess.Popen(command, stdout=segmented_file, shell=False)
+p.wait()
 segmented_file.close()
 os.remove(intermedia_buffer)
 
