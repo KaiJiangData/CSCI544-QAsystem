@@ -4,11 +4,11 @@ import os
 import codecs
 import subprocess
 
-# Put this py file in 'stanford-segmenter-2015-12-09' folder that can be downloaded from 
-# http://nlp.stanford.edu/software/segmenter.shtml
+# Put this segmentTxt.py and 'stanford-segmenter-2015-12-09' folder in the same directory
+# 'stanford-segmenter-2015-12-09' folder that can be downloaded from http://nlp.stanford.edu/software/segmenter.shtml
 # Usage: python segmentTxt.py input_Text_File_Name output_Text_File_Name
 
-segment_url = "./segment/segment.sh ctb "
+segment_url = "./stanford-segmenter-2015-12-09/segment.sh ctb "
 intermedia_buffer = "intermedia_buffer.txt"
 otherArg = " UTF-8 0"
 
