@@ -30,6 +30,6 @@ segmented_file = open(sys.argv[2], 'w')
 command = segment_url + intermedia_buffer + otherArg
 subprocess.Popen(command, stdout=segmented_file, shell=True)
 segmented_file.close()
-os.remove("intermedia_buffer")
+os.remove(intermedia_buffer)
 
 
