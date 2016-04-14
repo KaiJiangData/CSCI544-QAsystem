@@ -29,6 +29,7 @@ class answer(object):
                     self.candidates.append(y.group())
         if type=='date':
             # 月日的部分
+
             self.candidates=[[],[]]
             for i in range(a, b):
                 m =  re.search(r'(\d+\xE6\x9C\x88)', words[i]) # month
@@ -40,11 +41,12 @@ class answer(object):
                         self.candidates[0].append(m.group())
             for i in range(a, b):
                 y = re.search(r'(\d{4}\xE5\xB9\xB4)', words[i]) # year
-                    if y!=None:
-                        self.candidates[1].append(y.group())
+                if y!=None:
+                    self.candidates[1].append(y.group())
         if type=='person' or 'location':
+            a=words[0]
             for i in range(a, b):
-                if words[i][-2:]=='NR':# 于是这也显示有bug???
+                if words[i][-2:]=='NR':
                     self.candidates.append(words[i][:-3])
 
 
@@ -84,9 +86,20 @@ class answer(object):
                             self.candidates.append(self.select(type, words, 0, len(words)-1))
             if self.candidates[0]!=[] and self.candidates[1]!=[]:
                 return max(set(self.candidates[0]), key=self.candidates[0].count)+max(set(self.candidates[1]), key=self.candidates[1].count)
-            # here 再加一个缺少时间的判断!
+            # here 没有找到时间的话就会用该文章的时间作参考
+            elif self.candidates[0]!=[]:
+                print "I'm not sure of the year...Maybe this one?"
+                b= []
+                for i in articles[1:start_point+1]:
+                    b.append(i[0][:4])
+                return max(set(self.candidates[0]), key=self.candidates[0].count)+max(set(b), key=b.count)
             else:
-                return 'sorry buddy, just google it.'
+                print "I'm not sure really...I'm purely guessing here: "
+                b= []
+                for i in articles[1:start_point+1]:
+                    b.append(i[0])
+                return max(set(b), key=b.count)
+
         if type=='person' or 'location':
             # we still need POS to distinguish these two
             for k in range(len(info)):
@@ -103,10 +116,9 @@ class answer(object):
                                     if num>punc[j] and num<punc[j+1]:
                                         self.candidates.append(self.select(type, words, punc[j], punc[j+1]))
                     except ValueError:
-                        self.candidates.append(self.select(type, words, 0, len(words)-1)
+                        self.candidates.append(self.select(type, words, 0, len(words)-1))
             # 这部分就是给比如2013年这种整句的限制,也考虑进去.以上的部分删除了他的影响.
-
-                    for num in range(len(words)): # 这里咋回事..显示有bug...
+                    for num in range(len(words)):
                         if words[num][:-3].decode('utf-8')==info[k].decode('utf-8'):
                             self.candidates.append(self.select(type, words, 0, len(words)-1))
                 if k in self.candidates:
@@ -115,5 +127,7 @@ class answer(object):
                 return max(set(self.candidates), key=self.candidates.count)
             else:
                 return 'sorry buddy, just google it.'
+
+
 
 
