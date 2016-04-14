@@ -1,0 +1,1 @@
+java -cp stanford-parser-full-2015-12-09/stanford-parser-3.6.0.jar:stanford-parser-full-2015-12-09/stanford-parser-3.6.0-models.jar
