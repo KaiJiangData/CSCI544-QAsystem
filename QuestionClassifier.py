@@ -10,6 +10,7 @@ def tagQues(que, wordSet):
             tag[1] = tag[1] + wordSet[i][1]
             tag[2] = tag[2] + wordSet[i][2]
             tag[3] = tag[3] + wordSet[i][3]
+    inx = tag.index(max(tag))
     print tag
     if inx == 0:
         tg = "人"
