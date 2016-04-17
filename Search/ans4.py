@@ -159,7 +159,7 @@ class answer2:
                 self.candidates_per=[]
                 key_match=0
                 for k in range(len(self.ques_info['info'])):
-                    whole_words=[]
+                    whole_words=set()
                     for sen in xrange(len(arr[arti])):
                         words=[]
                         tags=[]
@@ -167,7 +167,7 @@ class answer2:
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
                             tags.append(wordtag.rsplit('#',1)[1])
-                            whole_words.append(wordtag.rsplit('#',1)[0])
+                            whole_words.add(wordtag.rsplit('#',1)[0])
 
                         try:
                             punc = [x for x in range(len(words)) if words[x]==u'\uFF0C']
@@ -189,7 +189,6 @@ class answer2:
                     if i in self.ques_info['info']:
                         self.candidates_per.remove(i)
                 if self.candidates_per!=[]:
-                    
                     #print (max(set(self.candidates_per), key=self.candidates_per.count))
                     arti_candi.extend(max(set(self.candidates_per), key=self.candidates_per.count) for i in range(key_match*key_match*key_match))
                     '''
