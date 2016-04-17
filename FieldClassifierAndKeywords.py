@@ -8,6 +8,8 @@ import re
 import math
 import json
 import codecs
+import time
+import json
 
 
 
@@ -34,9 +36,9 @@ def FieldClassifierAndKeywords(question):
     f = codecs.open("output.txt","r")
     s = f.readline().strip()
     Keywords = extract(s)
-    KeywordsWithWeight = keywordWeight(s)
-
-    return [questionTag,Keywords,KeywordsWithWeight]
+    #KeywordsWithWeight = keywordWeight(s)
+    kw = keyweight(s)
+    return [questionTag,Keywords,kw]
 
 pattern_person = re.compile(ur"谁|哪位", re.UNICODE)
 pattern_time = re.compile(ur"什么时候|(哪|几.*(年|月|日|天|朝代))", re.UNICODE)
@@ -54,8 +56,13 @@ def typeClassify(question):
     ques=[]
     for i in words:
         ques.append(i)
+    t1 = time.time()
     result = nbClassifier(ques)
+    t2 = time.time() - t1
+    print t2
     return result
+
+
 
 def tagQues(que,wordSet):
     tag =[0,0,0,0]
@@ -81,7 +88,7 @@ def tagQues(que,wordSet):
         return tg
 
 def nbClassifier(question):
-    f1 = open("output.txt", "r")
+    f1 = open("out-put.txt", "r")
     f2 = open("ques_classifier_training.txt","r")
     wordSet = {}
     c1 = 0
@@ -194,6 +201,8 @@ def extract(question):
     return keywords
 
 
+
+
 def keywordWeight(question):
     keyword = []
     f = codecs.open("chinese_stopwords.txt","r","utf-8")
@@ -205,7 +214,6 @@ def keywordWeight(question):
         else:
             s= s.strip("\r\n")
             stopWord[s] = 1
-    print stopWord
     for word in question.split():
         sep = word.split('#')
         word = sep[0].decode("utf-8")
@@ -220,12 +228,48 @@ def keywordWeight(question):
                 keyword.append(word)
     return keyword
 
+
+def keyweight(question):
+    words = []
+    tag = []
+    for word in question.split():
+        sep = word.split('#')
+        words.append(sep[0])
+        tag.append(sep[1])
+    f = open("tagwithweight.txt","r")
+    pairs = json.loads(f.read())
+    finaltagWeights = []
+    for i in pairs:
+        f =False
+        if len(i[0]) != len(tag):
+            continue
+        for n in range(0,len(i[0])):
+            #print i[0][n]
+            #print tag[n]
+            if i[0][n] == tag[n]:
+                f = True
+            else:
+                f = False
+                break
+        if f == True:
+            finaltagWeights = i[1]
+            break
+    key = {}
+    for i in range(0,len(finaltagWeights)):
+        if finaltagWeights[i] == 0:
+            continue
+        else:
+            key[words[i]] = finaltagWeights[i]
+    return key
+
+
+
 if __name__ == '__main__':
-    s = FieldClassifierAndKeywords("民国革命将领张学良的父亲叫什么名字?")
+    s = FieldClassifierAndKeywords("越南第十三届国会第十一次会议什么时候举办?")
     s1 = s[0].decode('utf-8')
     print s1
     for i in s[1]:
         print i
     for i in s[2]:
-        print i
+        print i + str(s[2][i])
 
