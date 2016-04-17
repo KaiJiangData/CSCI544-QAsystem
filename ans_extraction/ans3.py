@@ -55,12 +55,13 @@ class answer2:
             for arti in xrange(num_of_article+1, len(arr)):
                 key_match=0
                 for k in range(len(self.ques_info['info'])):
-                    key_match+=1
+                    whole_words=[]
                     for sen in xrange(len(arr[arti])):
                         words=[]
-                        wordtags=arr[arti][sen].split(' ')
+                        wordtags=arr[arti][sen].split()
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
+                            whole_words.append(wordtag.rsplit('#',1)[0])
 
                         try:
                             punc = [x for x in range(len(words)) if words[x]==u'\uFF0C']
@@ -76,6 +77,8 @@ class answer2:
                         for num in range(len(words)):
                                 if words[num]==self.ques_info['info'][k]:
                                     candidates_dec = self.select_decimal(words, 0, len(words)-1)
+                    if self.ques_info['info'][k] in whole_words:
+                        key_match+=1
 
                 arti_candi.extend(max(set(candidates_dec), key=candidates_dec.count) for i in range(10*key_match))
             print max(set(arti_candi), key=arti_candi.count)
@@ -86,12 +89,13 @@ class answer2:
             for arti in xrange(num_of_article+1, len(arr)):
                 key_match=0
                 for k in range(len(self.ques_info['info'])):
-                    key_match+=1
+                    whole_words=[]
                     for sen in xrange(len(arr[arti])):
                         words=[]
                         wordtags=arr[arti][sen].split(' ')
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
+                            whole_words.append(wordtag.rsplit('#',1)[0])
 
                         try:
                             punc = [x for x in range(len(words)) if words[x]==u'\uFF0C']
@@ -107,6 +111,8 @@ class answer2:
                         for num in range(len(words)):
                                 if words[num]==self.ques_info['info'][k]:
                                     candidates_int = self.select_int(words, 0, len(words)-1)
+                    if self.ques_info['info'][k] in whole_words:
+                        key_match+=1
                 arti_candi.extend(max(set(candidates_int), key=candidates_int.count) for i in range(10*key_match))
             print max(set(arti_candi), key=arti_candi.count)
 
@@ -115,17 +121,21 @@ class answer2:
             for arti in xrange(num_of_article+1, len(arr)):
                 key_match=0
                 for k in range(len(self.ques_info['info'])):
-                    key_match+=1
+                    whole_words=[]
                     for sen in xrange(len(arr[arti])):
                         words=[]
                         wordtags=arr[arti][sen].split(' ')
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
+                            whole_words.append(wordtag.rsplit('#',1)[0])
 
                             for num in range(len(words)):
                                 if words[num]==self.ques_info['info'][k]:
                                     candidates_year = self.select_year(words, 0, len(words)-1)
                                     candidates_month = self.select_month(words, 0, len(words)-1)
+                    if self.ques_info['info'][k] in whole_words:
+                        key_match+=1
+
                 if candidates_month!=[] and candidates_year!=[]:
                     arti_candi.extend(max(set(candidates_month), key=candidates_month.count)+max(set(candidates_year), key=candidates_year.count) for i in range(10*key_match))
                 elif candidates_month!=[]:
@@ -145,7 +155,7 @@ class answer2:
             for arti in xrange(num_of_article+1, len(arr)):
                 key_match=0
                 for k in range(len(self.ques_info['info'])):
-                    key_match+=1
+                    whole_words=[]
                     for sen in xrange(len(arr[arti])):
                         words=[]
                         tags=[]
@@ -153,6 +163,7 @@ class answer2:
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
                             tags.append(wordtag.rsplit('#',1)[1])
+                            whole_words.append(wordtag.rsplit('#',1)[0])
 
                         try:
                             punc = [x for x in range(len(words)) if words[x]==u'\uFF0C']
@@ -168,6 +179,8 @@ class answer2:
                         for num in range(len(words)):
                                 if words[num]==self.ques_info['info'][k]:
                                     candidates_per = self.select_per(words, tags, 0, len(words)-1)
+                    if self.ques_info['info'][k] in whole_words:
+                        key_match+=1
                 for i in candidates_per:
                     if i in self.ques_info['info']:
                         candidates_per.remove(i)
