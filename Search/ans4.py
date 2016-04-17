@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import print_function
 import re
+
 class answer2:
     def __init__(self):
         self.ques_info= {'field':'Inter',
             'type': 'person',
-            'info': [u'四', u'地震', u'四', u'四', u'四']
+            'info': [u'四',u'四', u'四', u'四']
             }
         self.candidates_int=[]
         self.candidates_dec=[]
@@ -45,7 +48,7 @@ class answer2:
         for i in range(a, b):
             if tags[i]=='NR':
                 self.candidates_per.append(words[i])
-        return self.candidates_per
+        
 
     def fun(self,arr):
         num_of_article = int(arr[0])
@@ -81,7 +84,7 @@ class answer2:
                         key_match+=1
 
                 arti_candi.extend(max(set(candidates_dec), key=candidates_dec.count) for i in range(10*key_match))
-            print max(set(arti_candi), key=arti_candi.count)
+            print (max(set(arti_candi), key=arti_candi.count))
 
 
 
@@ -92,7 +95,7 @@ class answer2:
                     whole_words=[]
                     for sen in xrange(len(arr[arti])):
                         words=[]
-                        wordtags=arr[arti][sen].split(' ')
+                        wordtags=arr[arti][sen].split()
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
                             whole_words.append(wordtag.rsplit('#',1)[0])
@@ -114,7 +117,7 @@ class answer2:
                     if self.ques_info['info'][k] in whole_words:
                         key_match+=1
                 arti_candi.extend(max(set(candidates_int), key=candidates_int.count) for i in range(10*key_match))
-            print max(set(arti_candi), key=arti_candi.count)
+            print (max(set(arti_candi), key=arti_candi.count))
 
 
         if self.ques_info['type']=='date':
@@ -124,7 +127,7 @@ class answer2:
                     whole_words=[]
                     for sen in xrange(len(arr[arti])):
                         words=[]
-                        wordtags=arr[arti][sen].split(' ')
+                        wordtags=arr[arti][sen].split()
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
                             whole_words.append(wordtag.rsplit('#',1)[0])
@@ -148,18 +151,19 @@ class answer2:
                     for i in arr[1:num_of_article+1]:
                         b.append(i[0])
                     arti_candi.extend(max(set(b), key=b.count) for i in range(10*key_match))
-            print max(set(arti_candi), key=arti_candi.count)
+            print (max(set(arti_candi), key=arti_candi.count))
                     # havent add the influence of key_match yet
 
         if self.ques_info['type']=='person' or self.ques_info['type']=='location':
             for arti in xrange(num_of_article+1, len(arr)):
+                self.candidates_per=[]
                 key_match=0
                 for k in range(len(self.ques_info['info'])):
                     whole_words=[]
                     for sen in xrange(len(arr[arti])):
                         words=[]
                         tags=[]
-                        wordtags=arr[arti][sen].split(' ')
+                        wordtags=arr[arti][sen].split()
                         for wordtag in wordtags:
                             words.append(wordtag.rsplit('#',1)[0])
                             tags.append(wordtag.rsplit('#',1)[1])
@@ -173,20 +177,28 @@ class answer2:
                                 if words[num]==self.ques_info['info'][k]:
                                     for j in range(len(punc)):
                                         if num>punc[j] and num<punc[j+1]:
-                                            candidates_per = self.select_per(words, tags, punc[j], punc[j+1])
+                                            self.select_per(words, tags, punc[j], punc[j+1])
                         except ValueError:
-                            candidates_per = self.select_per(words,tags, 0, len(words)-1)
+                            self.select_per(words,tags, 0, len(words)-1)
                         for num in range(len(words)):
                             if words[num]==self.ques_info['info'][k]:
-                                candidates_per = self.select_per(words, tags, 0, len(words)-1)
+                                self.select_per(words, tags, 0, len(words)-1)
                     if self.ques_info['info'][k] in whole_words:
                         key_match+=1
-                for i in candidates_per:
+                for i in self.candidates_per:
                     if i in self.ques_info['info']:
-                        candidates_per.remove(i)
-                if candidates_per!=[]:
-                    arti_candi.extend(max(set(candidates_per), key=candidates_per.count) for i in range(10*key_match))
-            print max(set(arti_candi), key=arti_candi.count)
+                        self.candidates_per.remove(i)
+                if self.candidates_per!=[]:
+                    
+                    #print (max(set(self.candidates_per), key=self.candidates_per.count))
+                    arti_candi.extend(max(set(self.candidates_per), key=self.candidates_per.count) for i in range(key_match*key_match*key_match))
+                    '''
+                    for a in arti_candi:
+                        print (a,' ', end='')
+                    print ('')
+                    print ('_________________')
+                    '''
+            print (max(set(arti_candi), key=arti_candi.count))
 
 
     def toArr(self):
@@ -195,6 +207,3 @@ class answer2:
         # art change into [[num],[time],[time],[[sen1],[sen2]], [[sen1],[sen2]]]
         return art
 
-
-ans = answer2()
-ans.fun(ans.toArr())

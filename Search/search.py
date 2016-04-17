@@ -5,6 +5,7 @@ import pymongo
 from pymongo import MongoClient
 import time
 import re
+import ans4
 
 class artcile_search:
 
@@ -51,7 +52,7 @@ class artcile_search:
 		for objectId in objectIdArr:
 			res=self.mongodb[objectId[2]].find_one({'_id':objectId[1]})
 			time.append(res['time'])
-			articles+=re.split(u'[\u3002\uff1b\uff01\uff1f\n]#PU',res['article'])
+			articles.append(re.split(u'[\u3002\uff1b\uff01\uff1f\n]#PU ',res['article'].rstrip(' ')))
 		return num+time+articles
 
 	def searchAndRetrival(self,dic,db):
@@ -66,13 +67,25 @@ engine=artcile_search()
 start_time = time.time()
 res = engine.search(set([u'几内亚',u'海啸']),0)
 art = engine.retrival(res)
+
+
+ans = ans4.answer2()
+ans.fun(art)
+
+
+'''
 print("--- %s seconds ---" % (time.time() - start_time))
-print len(res)
-print res
-f=codecs.open('log.txt','w','utf-8')
-for sentence in art:
-	f.write(sentence+'\n')
+f=codecs.open('log1.txt','w','utf-8')
+n = int(art[0])
+for i in xrange(1+n,len(art)):
+	for sent in art[i]:
+		f.write(sent)
+	if i != len(art)-1:
+		f.write('\n')
 f.close()
+'''
+
+
 
 
 
