@@ -6,7 +6,6 @@ import jieba
 import string
 import re
 import math
-import json
 import codecs
 import time
 import json
@@ -40,7 +39,7 @@ class FieldClassifierAndKeywords:
         s = f.readline().strip()
         Keywords = self.extract(s)
         #KeywordsWithWeight = keywordWeight(s)
-        kw = self.keyweight(s)
+        kw = wordWithWeight2()
         return [questionTag,Keywords,kw]
 
         pattern_person = re.compile(ur"谁|哪位", re.UNICODE)
@@ -140,10 +139,6 @@ class FieldClassifierAndKeywords:
             wordSet[i] = [wordSet[i][0]+1,wordSet[i][1]+1,wordSet[i][2]+1,wordSet[i][3]+1]
         for i in wordSet:
             wordSet[i] = [math.log(wordSet[i][0]/float(c1+len(wordSet))),math.log(wordSet[i][1]/float(c2+len(wordSet))),math.log(wordSet[i][2]/float(c3+len(wordSet))),math.log(wordSet[i][3]/float(c4+len(wordSet)))]
-        #fout = open("wordSet.txt","w")
-        #s= json.dumps(wordSet)
-        #fout.write(s)
-        #fout.close()
         tag=self.tagQues(question,wordSet)
         return tag
 
@@ -247,8 +242,6 @@ class FieldClassifierAndKeywords:
             if len(i[0]) != len(tag):
                 continue
             for n in range(0,len(i[0])):
-                #print i[0][n]
-                #print tag[n]
                 if i[0][n] == tag[n]:
                     f = True
                 else:
@@ -266,13 +259,87 @@ class FieldClassifierAndKeywords:
         return key
 
 
+def wordWithWeight2():
+    words = []
+    tag = []
+    f = codecs.open("output.txt", "r")
+    question = f.readline().strip()
+    f.close()
+    for word in question.split():
+        sep = word.split('#')
+        words.append(sep[0])
+        tag.append(unicode(sep[1],'unicode-escape'))
+
+    f = open("tagwithweight.txt", "r")
+    pairs = json.loads(f.read())
+    maxSimilarity = 0
+    maxtag = []
+    maxweight = []
+    f.close()
+    for p in pairs:
+        s = SimilarityComparison(tag, p[0])
+        if s >maxSimilarity:
+            maxSimilarity = s
+            maxtag = p[0]
+            maxweight = p[1]
+    sm =""
+    st =""
+    s = LCSsequence(tag,maxtag,sm,st)
+    print s
+    t1 = s[1].split()
+    t2 = s[2].split()
+    dict = {}
+    for i in range(0,len(t1)):
+        dict[words[int(t2[i])]] = maxweight[int(t1[i])]
+    return dict
+
+
+
+
+def LCSsequence(List1, List2, s1,s2):
+    if len(List1) == 0 or len(List2) == 0:
+        return (0,s1,s2)
+    if List1[-1:] == List2[-1:]:
+        i = str(len(List2[:-1]))
+        j = str(len(List1[:-1]))
+        s  =LCSsequence(List1[:-1], List2[:-1],s1,s2)
+        return (s[0]+1, s[1]+" "+ i, s[2] + " " +j)
+    else:
+        ss1 = LCSsequence(List1[:-1], List2,s1,s2)
+        ss2 = LCSsequence(List1, List2[:-1],s1,s2)
+        if ss1[0]>ss2[0]:
+            return ss1
+        else:
+            return ss2
+
+
+
+def SimilarityComparison( targetList, MatchingList):
+    # targetList is a list of pos tag from query, MatchingSet is a list of list
+    c = LCS(targetList,MatchingList)
+    similarity = (float(c)/len(MatchingList))
+    return similarity
+
+def LCS(List1, List2):
+    if len(List1) == 0 or len(List2) ==0:
+        return 0
+
+    if List1[-1:] == List2[-1:]:
+        return LCS(List1[:-1], List2[:-1])+1
+    else:
+        return max(LCS(List1[:-1], List2),LCS(List1, List2[:-1]))
 
 if __name__ == '__main__':
-    s = FieldClassifierAndKeywords("越南第十三届国会第十一次会议什么时候举办?")
-    s1 = s[0].decode('utf-8')
-    print s1
-    for i in s[1]:
-        print i
-    for i in s[2]:
-        print i + str(s[2][i])
+    l1 = ["NN","NR","AS","NN","NR","SD"]
+    l2 = [["NN","NR","QW","AS","WE","SD","AS"],["NN","QW","QS","SD"],["NN","NR","AS","NR","AS","QW","NN","QS","SD"],["NN","NR","AS","QW","QS","SD"]]
+    #SimilarityComparison(l1,l2)
+    seq=""
+    s2= ""
+    s = wordWithWeight2()
+    print s
+    #S = LCSsequence(l1,l2[2],seq,s2)
+
+
+
+
 
