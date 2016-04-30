@@ -5,18 +5,24 @@ import pymongo
 from pymongo import MongoClient
 import time
 import re
-import ans4
+
+#import ans8
+#import query_preprocess
+
 
 class artcile_search:
 
 	def __init__(self):
-		txtFile = [['fh_in_pos_2.txt'],['fh_ma_pos_2.txt'],['fh_mi_pos_2.txt']]
+		#'fh_in_pos_2.txt','si_in_pos_2.txt','zx_in_pos_2.txt','fh_ma_pos_2.txt','si_ma_pos_2.txt','zx_ma_pos_2.txt','fh_mi_pos_2.txt','si_mi_pos_2.txt','zx_mi_pos_2.txt'
+		#txtFile = [['fh_mi_pos_2.txt','si_mi_pos_2.txt','zx_mi_pos_2.txt'],[],[]]
+		txtFile = [['fh_in_pos_2.txt','si_in_pos_2.txt','zx_in_pos_2.txt','fh_ma_pos_2.txt','si_ma_pos_2.txt','zx_ma_pos_2.txt','fh_mi_pos_2.txt','si_mi_pos_2.txt','zx_mi_pos_2.txt'],[],[]]
 		self.db = [[],[],[]]
 
 		client = MongoClient()
 		db = client.processedProj
 		self.mongodb={}
-	
+		
+		print 'loading...'
 		for x in xrange(0,3,1):
 			for i in xrange(0,len(txtFile[x]),1):
 				collection = txtFile[x][i][0:9]
@@ -31,18 +37,39 @@ class artcile_search:
 						else:
 							self.db[x].append(line.split())
 						line_number+=1
+		
 
 	def search(self,dic,db):
 		lines=self.db[db]
 		objectId=[]
 		neededMatch=len(dic)
+		maxMatch=0
 		for i in xrange(0,len(lines),2):
 			match=0
 			for word in lines[i+1]:
 				if word in dic:
 					match+=1
-			if neededMatch==match:
+			if match < maxMatch or match==0:
+				continue
+			elif match==maxMatch:
 				objectId.append(lines[i])
+			else:
+				maxMatch=match
+				del objectId[:]
+				objectId.append(lines[i])
+			'''
+			if neededMatch<=3:
+				if neededMatch==match:
+					objectId.append(lines[i])
+			elif neededMatch<=6:
+				if match>=4:
+					objectId.append(lines[i])
+			elif neededMatch<=9:
+				if match>=5:
+					objectId.append(lines[i])
+			'''
+
+		#print maxMatch
 		return objectId
 
 	def retrival(self,objectIdArr):
@@ -62,20 +89,25 @@ class artcile_search:
 
 				
 # For debug
-
+'''
 engine=artcile_search()
-start_time = time.time()
-res = engine.search(set([u'几内亚',u'海啸']),0)
+processQ = query_preprocess.processQuery()
+processQ.processQueryPos(raw_input())
+
+info = processQ.extractFineInfo('decimal')
+block = processQ.block()
+wordSet = processQ.extractSearchInfo()
+print processQ.posQuery 
+
+res = engine.search(wordSet,0)
 art = engine.retrival(res)
 
-
-ans = ans4.answer2()
+ans = ans8.answer2('decimal',info,block)
 ans.fun(art)
 
 
-'''
-print("--- %s seconds ---" % (time.time() - start_time))
-f=codecs.open('log1.txt','w','utf-8')
+f=codecs.open('log3.txt','w','utf-8')
+f.write(art[0]+'\n')
 n = int(art[0])
 for i in xrange(1+n,len(art)):
 	for sent in art[i]:
@@ -83,7 +115,15 @@ for i in xrange(1+n,len(art)):
 	if i != len(art)-1:
 		f.write('\n')
 f.close()
+
+for w in info:
+	print w+" "+str(info[w])
 '''
+
+
+
+
+
 
 
 
