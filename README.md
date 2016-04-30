@@ -5,7 +5,11 @@ CSCI544-QAsystem
 ----------------------------
 ###Final verson: 
 https://www.dropbox.com/s/dsshhxmtph12ycf/querySystem.zip?dl=0
-You can download final verson from the above dropBox link. However, in order to run this query system, you still need the corpus. The link of corpus is:https://www.dropbox.com/s/bxmlhwrccepxyol/Corpus.zip?dl=0
+
+You can download final verson from the above dropBox link. 
+
+However, in order to run this query system, you still need the corpus. The link of corpus is:https://www.dropbox.com/s/bxmlhwrccepxyol/Corpus.zip?dl=0
+
 The articles inside the corpus should be imported to MongoDB.
 
 
